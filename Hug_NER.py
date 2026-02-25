@@ -117,7 +117,7 @@ emails=re.findall(email_pattern, master_text)
 
 for i in range(len(words_master_text)):
    if(words_master_text[i] in emails):
-      words_master_text[i]='[EMAIL]'
+      words_master_text[i]='[EMAIL]' 
 
 print(words_master_text) 
 
@@ -131,11 +131,43 @@ print(text_final)''' #this will print the final text with the email addresses re
 
 final_text=re.sub(email_pattern,'[EMAIL]',master_text) #this will replace all email addresses of the pattern 
 #email_pattern with [EMAIL] in the master_text and return the final text with email addresses replaced by [EMAIL]
-print(final_text) 
+'''print(final_text)'''
 
 #We Repeat the same process for phone Numbers as well 
 phone_pattern=r"\b[0-9]{10}\b" #This pattern will match any 10 digit number
 phony_text='''Contact Rahul Verma at 1234567890 or 9876543210.'''
-print(re.sub(phone_pattern,'[PHONE]',phony_text)) #you can add a count=num section to replace num number of occurrences 
+'''print(re.sub(phone_pattern,'[PHONE]',phony_text))''' #you can add a count=num section to replace num number of occurrences 
 
 
+#But this is still not the most efficient way to do it because we have to write separate code for each entity 
+#and thus to reduce the redundancy we can convert it into a OOPS format and create a class that can handle 
+#both emails and phone numbers 
+
+class RegexMasker:
+   def __init__(self):
+        self.email_pattern=r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"
+        self.phone_pattern=r"\b[0-9]{10}\b"
+    
+   def maskemails(self,text):
+        masked_emails=[]
+        def replace(match):
+            masked_emails.append(match.group())
+            return '[EMAIL]'
+        
+        masked_text=re.sub(self.email_pattern,replace,text)
+        return masked_text, masked_emails #returned in a tuple format
+   def maskphones(self,text):
+        maskedphones=[]
+        def replace(match):
+            maskedphones.append(match.group())
+            return '[PHONE]'
+        masked_text=re.sub(self.phone_pattern,replace,text)
+        return masked_text,maskedphones
+        
+
+masker=RegexMasker()
+masked_text,masked_emails=masker.maskemails(master_text)
+masked_ptext,masked_phones=masker.maskphones(phony_text)
+print(masked_text)
+print(masked_ptext)
+      
