@@ -113,7 +113,7 @@ print(re.findall(email_pattern, master_text)) #this will return a list of all em
 emails=re.findall(email_pattern, master_text)
 
 #Now we manually flag these emails as ['EMAIL']
-words_master_text=master_text.split(" ") #split the master text into words
+'''words_master_text=master_text.split(" ") #split the master text into words
 
 for i in range(len(words_master_text)):
    if(words_master_text[i] in emails):
@@ -122,6 +122,14 @@ for i in range(len(words_master_text)):
 print(words_master_text) 
 
 text_final=' '.join(words_master_text) #join the list of words back into a single string gapped with a whitespace
-print(text_final) #this will print the final text with the email addresses replaced by [EMAIL]
+print(text_final)''' #this will print the final text with the email addresses replaced by [EMAIL]
 
 #This way we have successfully flagged the email addresses in the text without relying on the NER model's tokenization
+
+#But this is still not the most efficient way to do it because splitting the text can still contain some unwanted
+#characters like punctuation. 
+
+final_text=re.sub(email_pattern,'[EMAIL]',master_text) #this will replace all email addresses of the pattern 
+#email_pattern with [EMAIL] in the master_text and return the final text with email addresses replaced by [EMAIL]
+print(final_text) 
+
