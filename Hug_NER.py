@@ -133,3 +133,8 @@ final_text=re.sub(email_pattern,'[EMAIL]',master_text) #this will replace all em
 #email_pattern with [EMAIL] in the master_text and return the final text with email addresses replaced by [EMAIL]
 print(final_text) 
 
+#We Repeat the same process for phone Numbers as well 
+phone_pattern=r"\b[0-9]{10}\b" #This pattern will match any 10 digit number
+phony_text='''Contact Rahul Verma at 1234567890 or 9876543210.'''
+print(re.sub(phone_pattern,'[PHONE]',phony_text))
+
