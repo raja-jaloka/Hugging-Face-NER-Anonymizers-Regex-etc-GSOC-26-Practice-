@@ -136,5 +136,6 @@ print(final_text)
 #We Repeat the same process for phone Numbers as well 
 phone_pattern=r"\b[0-9]{10}\b" #This pattern will match any 10 digit number
 phony_text='''Contact Rahul Verma at 1234567890 or 9876543210.'''
-print(re.sub(phone_pattern,'[PHONE]',phony_text))
+print(re.sub(phone_pattern,'[PHONE]',phony_text)) #you can add a count=num section to replace num number of occurrences 
+
 
