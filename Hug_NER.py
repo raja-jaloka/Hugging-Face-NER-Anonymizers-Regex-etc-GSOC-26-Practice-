@@ -161,7 +161,7 @@ class RegexMasker:
         def replace(match):
             maskedphones.append(match.group())
             return '[PHONE]'
-        masked_text=re.sub(self.phone_pattern,replace,text)
+        masked_text=re.sub(self.phone_pattern,replace,text) 
         return masked_text,maskedphones
         
 
@@ -171,3 +171,6 @@ masked_ptext,masked_phones=masker.maskphones(phony_text)
 print(masked_text)
 print(masked_ptext)
       
+#Now the above still not perfect to be used as it is in a production environment 
+#because we to call the functions separately for each entity type and so that is not very user friendly 
+#We will resolve this in Anonymizer.py file so please check that out. 
