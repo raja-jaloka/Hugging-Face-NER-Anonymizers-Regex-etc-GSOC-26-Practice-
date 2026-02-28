@@ -73,4 +73,51 @@ class Anonymizer_advanced:
     
 anonymizer_adv=Anonymizer_advanced()
 master_text=anonymizer_adv.mask(master_text)
-print(master_text)
+print(master_text) 
+
+#The customised masking part is now done. 
+#Now we mask persons, organizations and locations using NER. 
+
+#for e in ner_pipe(master_text):
+ #   print(e)
+
+class Ner_Masker:
+    def __init__(self):
+        self.labels={
+            "I-PER":"[PERSON]",
+            "I-ORG":"[ORGANIZATION]",
+            "I-LOC":"[LOCATION]"
+        }
+
+    def mask(self,text):
+        masked_entities=[]
+        span=[]
+        for e in ner_pipe(text):
+            if(e['entity']=="I-PER"):
+                span.append((e['start'],e['end'],self.labels[e['entity']]))
+            elif(e['entity']=="I-ORG"):
+                span.append((e['start'],e['end'],self.labels[e['entity']]))
+            elif(e['entity']=="I-LOC"):
+                span.append((e['start'],e['end'],self.labels[e['entity']]))
+        merged=[]
+        i=0
+        while(i<len(span)):
+            start,end,label=span[i]
+            while(i+1<len(span) and span[i+1][0]==end):
+                end=span[i+1][1]
+                i+=1
+            merged.append((start,end,label))
+            i+=1
+        merged.reverse()#to prevent index shifting while replacing 
+        for tup in merged:
+            start,end,label=tup 
+            text=text[:start]+label+text[end:]
+        
+        return text
+
+#Ner_Anonymizer=Ner_Masker()
+#master_text=Ner_Anonymizer.mask(master_text)
+#print(master_text) 
+#One problem noticed here is that it considers "EMAIL" to be an I-ORG. 
+protected_spans=[]
+#def protect_spans(text):
