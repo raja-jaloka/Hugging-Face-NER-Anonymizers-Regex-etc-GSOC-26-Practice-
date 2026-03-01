@@ -138,4 +138,4 @@ print("Recall_score:",metrics.recall_score(y_true,y_pred,average="binary"))
 print("F1_score:",metrics.f1_score(y_true,y_pred))
 
 #The precision score is a little vague because the dataset is very small. 
-
+#Initial manual evaluation showed high precision in masking structured entities, while recall for semantic entities was moderate, indicating scope for improving detection sensitivity through configurable thresholds.
