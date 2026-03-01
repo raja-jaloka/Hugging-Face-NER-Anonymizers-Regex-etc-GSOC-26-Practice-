@@ -73,7 +73,8 @@ class Anonymizer_advanced:
     
 anonymizer_adv=Anonymizer_advanced()
 master_text=anonymizer_adv.mask(master_text)
-print(master_text) 
+print(master_text)
+print("\n") 
 
 #The customised masking part is now done. 
 #Now we mask persons, organizations and locations using NER. 
@@ -108,7 +109,9 @@ class Ner_Masker:
                 i+=1
             merged.append((start,end,label))
             i+=1
-        merged.reverse()#to prevent index shifting while replacing 
+
+        merged.reverse()#to prevent index shifting while replacing
+        
         for tup in merged:
             start,end,label=tup 
             text=text[:start]+label+text[end:]
@@ -118,6 +121,21 @@ class Ner_Masker:
 #Ner_Anonymizer=Ner_Masker()
 #master_text=Ner_Anonymizer.mask(master_text)
 #print(master_text) 
-#One problem noticed here is that it considers "EMAIL" to be an I-ORG. 
+#One problem noticed here is that it considers "EMAIL" to be an I-ORG. Therefore the tokeniser is not able to identify masked identities and 
+#so we will use a different model for NER which is more accurate and is trained on a larger dataset. Which will be discussed later in a different file.
 protected_spans=[]
-#def protect_spans(text):
+Ner_Anonymizer=Ner_Masker()
+master_text=Ner_Anonymizer.mask(master_text)
+print(master_text) 
+
+import sklearn.metrics as metrics 
+#we treat the data to be evaluated as a binary classification this evaluation tells 
+#whether the model correctly masks the correct entity regardless of the type of label of the mask.
+y_true=[1,1,0,1,0,1,0,0,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,0]
+y_pred=[1 if word in ["[PERSON]","[ORGANIZATION]","[LOCATION]"] else 0 for word in master_text.split(" ")]
+print("Precision_score:",metrics.precision_score(y_true,y_pred,average="binary"))
+print("Recall_score:",metrics.recall_score(y_true,y_pred,average="binary"))
+print("F1_score:",metrics.f1_score(y_true,y_pred))
+
+#The precision score is a little vague because the dataset is very small. 
+
