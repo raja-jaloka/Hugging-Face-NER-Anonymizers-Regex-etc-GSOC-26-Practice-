@@ -50,7 +50,7 @@ anonymizer=Anonymizer()
 #print(masked_phones)
 #print(master_text)
 
-class Anonymizer_advanced:
+class Anonymizer_advanced: #handles both email and phone masking in a single loop.
     def __init__(self):
         self.patterns={
             "EMAIL":r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b',
@@ -68,7 +68,7 @@ class Anonymizer_advanced:
             text=re.sub(pattern,replace,text)''' #However this would still work but it's not always safe to rely on
             def replace(match,label=label):
                 return self.labels[label] #we can use this because we are passing the label as a default argument to the function and thus it will access the correct label value for each pattern
-            text=re.sub(pattern,replace,text)
+            text=re.sub(pattern,replace,text) #gives replace(match)i.e the object that matches the pattern type.
         return text 
     
 anonymizer_adv=Anonymizer_advanced()
