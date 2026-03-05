@@ -79,8 +79,8 @@ print("\n")
 #The customised masking part is now done. 
 #Now we mask persons, organizations and locations using NER. 
 
-#for e in ner_pipe(master_text):
- #   print(e)
+for e in ner_pipe(master_text):
+    print(e)
 
 class Ner_Masker:
     def __init__(self):
@@ -104,7 +104,7 @@ class Ner_Masker:
         i=0
         while(i<len(span)):
             start,end,label=span[i]
-            while(i+1<len(span) and span[i+1][0]==end):
+            while(i+1<len(span) and (span[i+1][0]==end or span[i+1][0]==end+1)):
                 end=span[i+1][1]
                 i+=1
             merged.append((start,end,label))
@@ -131,7 +131,7 @@ print(master_text)
 import sklearn.metrics as metrics 
 #we treat the data to be evaluated as a binary classification this evaluation tells 
 #whether the model correctly masks the correct entity regardless of the type of label of the mask.
-y_true=[1,1,0,1,0,1,0,0,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,0,0]
+y_true=[1,0,1,0,1,0,0,0,0,0,0,0,0,1,0,1,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0]
 y_pred=[1 if word in ["[PERSON]","[ORGANIZATION]","[LOCATION]"] else 0 for word in master_text.split(" ")]
 print("Precision_score:",metrics.precision_score(y_true,y_pred,average="binary"))
 print("Recall_score:",metrics.recall_score(y_true,y_pred,average="binary"))
@@ -139,3 +139,4 @@ print("F1_score:",metrics.f1_score(y_true,y_pred))
 
 #The precision score is a little vague because the dataset is very small. 
 #Initial manual evaluation showed high precision in masking structured entities, while recall for semantic entities was moderate, indicating scope for improving detection sensitivity through configurable thresholds.
+#We cured Yet another problem which was masking of name and surname as different entities. 
