@@ -57,8 +57,8 @@ class Anonymizer_advanced: #handles both email and phone masking in a single loo
             "PHONE":r'\b[0-9]{10}\b'
         }
         self.labels={
-            "EMAIL":"[EMAIL]",
-            "PHONE":"[PHONE]"
+            "EMAIL":"__EMAIL__",
+            "PHONE":"__PHONE__"
         }
         
     def mask(self,text):
@@ -104,7 +104,7 @@ class Ner_Masker:
         i=0
         while(i<len(span)):
             start,end,label=span[i]
-            while(i+1<len(span) and (span[i+1][0]==end or span[i+1][0]==end+1)):
+            while(i+1<len(span) and (span[i+1][0]==end or span[i+1][0]==end+1) and span[i+1][2]==label):
                 end=span[i+1][1]
                 i+=1
             merged.append((start,end,label))
@@ -115,6 +115,9 @@ class Ner_Masker:
         for tup in merged:
             start,end,label=tup 
             text=text[:start]+label+text[end:]
+        
+        text=text.replace("__EMAIL__","[EMAIL]")
+        text=text.replace("__PHONE__","[PHONE]")
         
         return text
 
@@ -140,3 +143,8 @@ print("F1_score:",metrics.f1_score(y_true,y_pred))
 #The precision score is a little vague because the dataset is very small. 
 #Initial manual evaluation showed high precision in masking structured entities, while recall for semantic entities was moderate, indicating scope for improving detection sensitivity through configurable thresholds.
 #We cured Yet another problem which was masking of name and surname as different entities. 
+
+
+
+#FINAL CONCLUSION: the present model of ner detects words in a very confusing manner which might/might not be true.
+#Thus we're Using GLiNER for better detection check out Ganony.py
